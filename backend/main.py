@@ -9,9 +9,7 @@ from models import User
 
 from sqlalchemy.orm import Session
 from database import Base,  engine
-
-SECRET_KEY = "QWERTYUIOP"
-ALGORITHM = "HS256"
+from config import ALGORITHM, SECRET_KEY
 EXPIRATION_TIME = timedelta(hours=24)
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
