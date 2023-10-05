@@ -8,8 +8,9 @@ from database import SessionLocal
 from models import User
 
 from sqlalchemy.orm import Session
-from database import Base,  engine
+from database import Base, engine
 from config import ALGORITHM, SECRET_KEY
+
 EXPIRATION_TIME = timedelta(hours=24)
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -17,8 +18,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 Base.metadata.create_all(bind=engine)
 
 
-def create_jwt_token(data: dict):
+def create_jwt_token(user: User):
+    data = dict()
     expiration = datetime.utcnow() + EXPIRATION_TIME
+    data.update({"sub": user.username})
+    data.update({"role": get_user_role(user)})
     data.update({"exp": expiration})
     token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
     return token
@@ -64,12 +68,12 @@ def get_db():
 app = FastAPI()
 
 
-@app.post("/register")
-def registered_user(user: UserCreate, db: Session = Depends(get_db)) -> UserCreate:
-    hashed_password = pwd_context.hash(user.password)
-    user.password = hashed_password
-    create_user(db, user)
-    return user
+# @app.post("/register")
+# def registered_user(user: UserCreate, db: Session = Depends(get_db)) -> UserCreate:
+#     hashed_password = pwd_context.hash(user.password)
+#     user.password = hashed_password
+#     create_user(db, user)
+#     return user
 
 
 @app.post("/token")
@@ -80,7 +84,7 @@ def authenticate_user(username: str, password: str, db: Session = Depends(get_db
     is_password_correct = pwd_context.verify(password, user.password)
     if not is_password_correct:
         raise HTTPException(status_code=400, detail="Incorrect password")
-    jwt_token = create_jwt_token({"sub": (user.username, get_user_role(user))})
+    jwt_token = create_jwt_token(user)
     return {"access_token": jwt_token, "token_type": "bearer"}
 
 # def get_current_user(db: Session = Depends(get_db), token: str = Depends(oath2_scheme)):
