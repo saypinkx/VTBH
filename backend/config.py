@@ -9,4 +9,3 @@ DB_PASS = os.environ.get("DB_PASS")
 DB_USER = os.environ.get("DB_USER")
 ALGORITHM = os.environ.get("ALGORITHM")
 SECRET_KEY = os.environ.get("SECRET_KEY")
-bd = 1
