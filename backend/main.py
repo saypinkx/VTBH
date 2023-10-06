@@ -22,7 +22,6 @@ def create_jwt_token(user: User):
     data = dict()
     expiration = datetime.utcnow() + EXPIRATION_TIME
     data.update({"sub": user.username})
-    data.update({"role": get_user_role(user)})
     data.update({"exp": expiration})
     token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
     return token
@@ -85,7 +84,7 @@ def authenticate_user(username: str, password: str, db: Session = Depends(get_db
     if not is_password_correct:
         raise HTTPException(status_code=400, detail="Incorrect password")
     jwt_token = create_jwt_token(user)
-    return {"access_token": jwt_token, "token_type": "bearer"}
+    return {"access_token": jwt_token, "token_type": "bearer", "username": user.username, "role": get_user_role(user)}
 
 # def get_current_user(db: Session = Depends(get_db), token: str = Depends(oath2_scheme)):
 #     decoded_data = verify_jwt_token(token)
