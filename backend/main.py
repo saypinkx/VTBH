@@ -15,7 +15,7 @@ EXPIRATION_TIME = timedelta(hours=24)
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 
 def create_jwt_token(user: User):
