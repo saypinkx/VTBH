@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from schemas import UserCreate
 from database import SessionLocal
 from models import User
-
+from crud import get_user, create_user
 from sqlalchemy.orm import Session
 from database import Base, engine
 from config import ALGORITHM, SECRET_KEY
@@ -35,12 +35,12 @@ def verify_jwt_token(token: str):
         return None
 
 
-def create_user(db: Session, user: UserCreate) -> User:
-    db_user = User(email=user.email, password=user.password, username=user.username)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+# def create_user(db: Session, user: UserCreate) -> User:
+#     db_user = User(email=user.email, password=user.password, username=user.username)
+#     db.add(db_user)
+#     db.commit()
+#     db.refresh(db_user)
+#     return db_user
 
 
 def get_user_role(user: User) -> str:
@@ -52,10 +52,10 @@ def get_user_role(user: User) -> str:
         return "user"
 
 
-def get_user(db: Session, username: str) -> User:
-    return db.query(User).filter(User.username == username).first()
+# def get_user(db: Session, username: str) -> User:
+#     return db.query(User).filter(User.username == username).first()
 
-
+app = FastAPI()
 def get_db():
     db = SessionLocal()
     try:
@@ -64,7 +64,6 @@ def get_db():
         db.close()
 
 
-app = FastAPI()
 
 
 # @app.post("/register")

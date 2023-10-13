@@ -1,11 +1,42 @@
 import json
 
-from models import Office
+from models import Office, Atm
 from database import SessionLocal
 from database import Base, engine
 
+
 def delete_all():
     Base.metadata.drop_all(bind=engine)
+
+
+def pars_atms():
+    with open("data/atms.json", "r", encoding='utf-8') as file:
+        data = json.load(file)
+        for atm in data['atms']:
+            address = atm['address']
+            latitude = atm['latitude']
+            longitude = atm['longitude']
+            is_all_day = atm['allDay']
+            services = atm['services']
+
+            wheelchair = services['wheelchair']['serviceActivity']
+            blind = services['blind']['serviceActivity']
+            nfc_for_bank_cards = services['nfcForBankCards']['serviceActivity']
+            qr_read = services['qrRead']['serviceActivity']
+            supports_usd = services['supportsUsd']['serviceActivity']
+            supports_charge_rub = services['supportsChargeRub']['serviceActivity']
+            supports_eur = services['supportsEur']['serviceActivity']
+            supports_rub = services['supportsRub']['serviceActivity']
+
+            with SessionLocal() as session:
+                atm_db = Atm(address=address, longitude=longitude, latitude=latitude, is_all_day=is_all_day,
+                             wheelchair=wheelchair, blind=blind,
+                             nfc_for_bank_cards=nfc_for_bank_cards, qr_read=qr_read, supports_rub=supports_rub,
+                             supports_usd=supports_usd, supports_charge_rub=supports_charge_rub,
+                             supports_eur=supports_eur)
+                session.add(atm_db)
+                session.commit()
+
 
 def pars_offices():
     with open("data/offices2.json", "r", encoding='utf-8') as file:
@@ -50,12 +81,26 @@ def pars_offices():
                 session.commit()
                 session.refresh(office_db)
 
-# def save(db: Session, **kwargs):
-#     office_db = Office(**kwargs)
-#     db.add(office_db)
-#     db.commit()
-#     db.refresh(office_db)
-#
-#
-# def create(db: Session = Depends(get_db), **kwargs):
-#     save(db, **kwargs)
+
+def redach_office():
+    with SessionLocal() as session:
+        db = session.query(Office).all()
+        for req in db:
+            mass = []
+            for slovar in req.open_hours:
+                dictionary = {'day': 'пн', 'hours': str(slovar['hours'])}
+                mass.append(dictionary)
+
+        req.open_hours = str(mass)
+
+        session.add(req)
+        session.commit()
+
+
+def test():
+    with SessionLocal() as session:
+        db = session.query(Office).filter(Office.id == 1)[0]
+        print(db.open_hours)
+
+
+
