@@ -17,22 +17,6 @@ module.exports = {
       ...require('./webpack.aliases'),
     },
   },
-  externalsType: 'script',
-  externals: {
-    '@yandex/ymaps3-types': [
-      `promise new Promise((resolve) => {
-          if (typeof ymaps3 !== 'undefined') {
-            return ymaps3.ready.then(() => resolve(ymaps3));
-          }
-          const script = document.createElement('script');
-          script.src = "https://api-maps.yandex.ru/v3/?apikey=3e1b5b71-7984-40b2-b1be-bbcf1825d105&lang=ru_RU";
-          script.onload = () => {
-            ymaps3.ready.then(() => resolve(ymaps3));
-          };
-          document.body.appendChild(script);
-        })`
-    ]
-  },
   stats: 'errors-warnings',
   devServer: {
     historyApiFallback: true,
