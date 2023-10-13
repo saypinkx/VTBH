@@ -1,13 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
-import { download, list, upload } from '@src/api';
-import { FileUploader } from '@src/components';
+import { download, upload } from '@src/api';
 import { UserFile } from '@src/models';
 import { gridProperties } from '@src/utils';
+import { YMap } from '@yandex/ymaps3-types';
 import './upload.less';
 
-const types = ['XLS', 'XLSX'];
+let map: YMap = null;
+
+async function main(): Promise<void> {
+  await ymaps3.ready;
+  const { YMap, YMapDefaultSchemeLayer, YMapControls } = ymaps3;
+  const { YMapZoomControl } = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
+  if (map) map.destroy();
+  map = new YMap(document.getElementById('root'), { location: { center: [37.623082, 55.75254], zoom: 9 } });
+  map.addChild(new YMapDefaultSchemeLayer({}));
+  map.addChild(new YMapControls({ position: 'right' }).addChild(new YMapZoomControl({})));
+}
 
 export const Upload = (): React.ReactElement => {
   const [externalError, setExternalError] = useState<string>();
@@ -75,9 +85,8 @@ export const Upload = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    list(true)
-      .then(res => setUploaded(res))
-      .catch(err => console.log(err));
+    main();
+    return () => map?.destroy();
   }, []);
 
   return (
@@ -98,14 +107,7 @@ export const Upload = (): React.ReactElement => {
       <p className="uploader-description" style={{ marginBottom: 24 }}>
         Загрузите Excel со списком объектов
       </p>
-      <FileUploader
-        externalError={externalError}
-        files={files.length > 0 ? files : null}
-        handleChange={e => onChange(e)}
-        maxCount={5}
-        maxSize={10}
-        types={types}
-      />
+      <div id="root"></div>
       {
         files.length > 0 && statuses.length > 0 && files.map((file: File, index: number) => (
           <div className="uploader-file" key={file.name}>
