@@ -22,7 +22,7 @@ module.exports = {
     historyApiFallback: true,
     hot: true,
     open: true,
-    port: 8180,
+    port: 8080,
   },
   optimization: {
     splitChunks: {
