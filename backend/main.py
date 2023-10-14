@@ -108,7 +108,7 @@ def get_filter_atms(atm_filter: AtmFilter, db: Session = Depends(get_db)) -> lis
 def get_filter_offices(office_filter: OfficeFilter, db: Session = Depends(get_db)) -> list[OfficeResponse]:
     offices = filter_office(office_filter, db)
     return offices
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=7000)
+#
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="127.0.0.1", port=7000)
 
