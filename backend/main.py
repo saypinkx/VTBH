@@ -1,15 +1,17 @@
 import jwt
+import uvicorn
 from datetime import datetime, timedelta
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from schemas import UserCreate
 from database import SessionLocal
-from models import User
-from crud import get_user, create_user
+from models import User, Atm
+from crud import get_user, create_user, filter_atm
 from sqlalchemy.orm import Session
 from database import Base, engine
 from config import ALGORITHM, SECRET_KEY
+from schemas import AtmFilter, AtmResponse
 
 EXPIRATION_TIME = timedelta(hours=24)
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
@@ -74,7 +76,7 @@ def get_db():
 #     return user
 
 
-@app.post("/token")
+@app.post("/api/token")
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
     user = get_user(db=db, username=username)
     if not user:
@@ -93,3 +95,12 @@ def authenticate_user(username: str, password: str, db: Session = Depends(get_db
 #     if not user:
 #         raise HTTPException(status_code=400, detail="User not found")
 #     return user
+
+@app.post('/api/filter_atm')
+def get_filter_atm(atm_filter: AtmFilter, db: Session = Depends(get_db)) -> list[AtmResponse]:
+    atms = filter_atm(atm_filter, db)
+    return atms
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=7000)
+

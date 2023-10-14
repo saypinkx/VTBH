@@ -44,15 +44,14 @@ class Atm(Base):
     latitude = mapped_column(String)
     longitude = mapped_column(String)
     is_all_day = mapped_column(Boolean)
-    wheelchair = mapped_column(String)
-    blind = mapped_column(String)
-    nfc_for_bank_cards = mapped_column(String)
-    qr_read = mapped_column(String)
-    supports_usd = mapped_column(String)
-    supports_charge_rub = mapped_column(String)
-    supports_eur = mapped_column(String)
-    supports_rub = mapped_column(String)
-
+    wheelchair = mapped_column(Boolean)
+    blind = mapped_column(Boolean)
+    nfc_for_bank_cards = mapped_column(Boolean)
+    qr_read = mapped_column(Boolean)
+    supports_usd = mapped_column(Boolean)
+    supports_charge_rub = mapped_column(Boolean)
+    supports_eur = mapped_column(Boolean)
+    supports_rub = mapped_column(Boolean)
 
 
 

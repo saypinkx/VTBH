@@ -8,6 +8,10 @@ from database import Base, engine
 def delete_all():
     Base.metadata.drop_all(bind=engine)
 
+def rename(value):
+    if value == 'AVAILABLE':
+        return True
+    return False
 
 def pars_atms():
     with open("data/atms.json", "r", encoding='utf-8') as file:
@@ -19,14 +23,14 @@ def pars_atms():
             is_all_day = atm['allDay']
             services = atm['services']
 
-            wheelchair = services['wheelchair']['serviceActivity']
-            blind = services['blind']['serviceActivity']
-            nfc_for_bank_cards = services['nfcForBankCards']['serviceActivity']
-            qr_read = services['qrRead']['serviceActivity']
-            supports_usd = services['supportsUsd']['serviceActivity']
-            supports_charge_rub = services['supportsChargeRub']['serviceActivity']
-            supports_eur = services['supportsEur']['serviceActivity']
-            supports_rub = services['supportsRub']['serviceActivity']
+            wheelchair = rename(services['wheelchair']['serviceActivity'])
+            blind = rename(services['blind']['serviceActivity'])
+            nfc_for_bank_cards = rename(services['nfcForBankCards']['serviceActivity'])
+            qr_read = rename(services['qrRead']['serviceActivity'])
+            supports_usd = rename(services['supportsUsd']['serviceActivity'])
+            supports_charge_rub = rename(services['supportsChargeRub']['serviceActivity'])
+            supports_eur = rename(services['supportsEur']['serviceActivity'])
+            supports_rub = rename(services['supportsRub']['serviceActivity'])
 
             with SessionLocal() as session:
                 atm_db = Atm(address=address, longitude=longitude, latitude=latitude, is_all_day=is_all_day,
