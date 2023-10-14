@@ -1,9 +1,12 @@
 from main import app
 from fastapi.middleware.cors import CORSMiddleware
-
+#
+# origins = [
+#     "http://localhost:8080",
+#     "http://31.129.101.225:8080"
+# ]
 origins = [
-    "http://localhost:8080",
-    "http://31.129.101.225:8080"
+    "*"
 ]
 
 app.add_middleware(
