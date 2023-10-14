@@ -13,9 +13,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
+    expose_headers = ["*"],
     allow_methods=["GET", "POST", "OPTIONS", "PATCH", "PUT"],
     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Authorization",
-                   "Access-Control-Allow-Credentials"],
+                   "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"],
 )
 
 # # origins = ['https://localhost:3000', 'https://localhost:8080']
