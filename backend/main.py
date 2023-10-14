@@ -12,13 +12,16 @@ from sqlalchemy.orm import Session
 from database import Base, engine
 from config import ALGORITHM, SECRET_KEY
 from schemas import AtmFilter, AtmResponse, OfficeFilter, OfficeResponse
+from settings import middleware
 
 EXPIRATION_TIME = timedelta(hours=24)
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 #Base.metadata.create_all(bind=engine)
 
+app = FastAPI(middleware=middleware)
 
 def create_jwt_token(user: User):
     data = dict()
@@ -57,7 +60,7 @@ def get_user_role(user: User) -> str:
 # def get_user(db: Session, username: str) -> User:
 #     return db.query(User).filter(User.username == username).first()
 
-app = FastAPI()
+
 def get_db():
     db = SessionLocal()
     try:
