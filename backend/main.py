@@ -1,7 +1,7 @@
 import jwt
 import uvicorn
 from datetime import datetime, timedelta
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from schemas import UserCreate
@@ -75,7 +75,10 @@ def get_db():
 #     create_user(db, user)
 #     return user
 
-
+@app.get('/')
+def main(response: Response):
+    response.set_cookie(key='token', value='some-token-value', httponly=True)
+    return {'status': 'success'}
 @app.post("/api/token")
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
     user = get_user(db=db, username=username)
