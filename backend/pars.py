@@ -11,6 +11,8 @@ def delete_all():
 def rename(value):
     if value == 'AVAILABLE':
         return True
+    elif value == 'UNKNOWN':
+        return None
     return False
 
 def pars_atms():
@@ -48,7 +50,10 @@ def pars_offices():
         for office in data:
             name = office['salePointName']
             address = office['address']
-            status = office['status']
+            if office['status'] == 'открытая':
+                status = True
+            else:
+                status = False
             open_hours = office['openHours']
             if office['rko'] == 'есть РКО':
                 rko = True
@@ -108,3 +113,4 @@ def test():
 
 
 
+pars_atms()

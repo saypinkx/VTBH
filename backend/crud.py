@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import User, Atm
-from schemas import UserCreate, AtmFilter
+from models import User, Atm, Office
+from schemas import UserCreate, AtmFilter, OfficeFilter
 from sqlalchemy import and_
 
 
@@ -16,7 +16,7 @@ def create_user(db: Session, user: UserCreate) -> User:
     return db_user
 
 
-def filter_atm(atm_filter: AtmFilter, db: Session, atms: Session = None):
+def filter_atm(atm_filter: AtmFilter, db: Session):
     filters_dict = {'blind': Atm.blind,
                     'is_all_day': Atm.is_all_day,
                     'wheelchair': Atm.wheelchair,
@@ -34,35 +34,18 @@ def filter_atm(atm_filter: AtmFilter, db: Session, atms: Session = None):
             atms = atms.filter(filters_dict[key] == 1)
     return atms.all()
 
-    # atms = db.query(Atm).all()
-    # filters = atm_filter.dict()
-    # filters_current = []
-    # result = []
-    # for key in filters:
-    #     if filters[key]:
-    #         filters_current.append(key)
-    # for atm in atms:
-    #     filters_dict = {'blind': atm.blind,
-    #                     'is_all_day': atm.is_all_day,
-    #                     'wheelchair': atm.wheelchair,
-    #                     'nfc_for_bank_cards': Atm.nfc_for_bank_cards,
-    #                     'qr_read': atm.qr_read                   }
-    #     flag = True
-    #     for filter in filters_current:
-    #         if not filters_dict[filter]:
-    #             flag = False
-    #     if flag:
-    #         result.append(atm)
-    # return result
-    #
 
-    # is_all_day = mapped_column(Boolean)
-    # wheelchair = mapped_column(Boolean)
-    # blind = mapped_column(Boolean)
-    # nfc_for_bank_cards = mapped_column(Boolean)
-    # qr_read = mapped_column(Boolean)
-    # supports_usd = mapped_column(Boolean)
-    # supports_charge_rub = mapped_column(Boolean)
-    # supports_eur = mapped_column(Boolean)
-    # supports_rub = mapped_column(Boolean)
-    #
+def filter_office(office_filter: OfficeFilter, db: Session):
+    filters_dict = {'has_ramp': Office.has_ramp,
+                    'kep': Office.kep,
+                    'my_branch': Office.my_branch,
+                    'rko': Office.rko,
+                    'status': Office.status
+                    }
+    current_filters = office_filter.dict()
+    offices = db.query(Office)
+    for key in current_filters:
+        if current_filters[key]:
+            offices = offices.filter(filters_dict[key] == 1)
+
+    return offices.all()

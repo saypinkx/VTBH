@@ -7,11 +7,11 @@ from passlib.context import CryptContext
 from schemas import UserCreate
 from database import SessionLocal
 from models import User, Atm
-from crud import get_user, create_user, filter_atm
+from crud import get_user, create_user, filter_atm, filter_office
 from sqlalchemy.orm import Session
 from database import Base, engine
 from config import ALGORITHM, SECRET_KEY
-from schemas import AtmFilter, AtmResponse
+from schemas import AtmFilter, AtmResponse, OfficeFilter, OfficeResponse
 
 EXPIRATION_TIME = timedelta(hours=24)
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
@@ -96,10 +96,15 @@ def authenticate_user(username: str, password: str, db: Session = Depends(get_db
 #         raise HTTPException(status_code=400, detail="User not found")
 #     return user
 
-@app.post('/api/filter_atm')
-def get_filter_atm(atm_filter: AtmFilter, db: Session = Depends(get_db)) -> list[AtmResponse]:
+@app.post('/api/atms')
+def get_filter_atms(atm_filter: AtmFilter, db: Session = Depends(get_db)) -> list[AtmResponse]:
     atms = filter_atm(atm_filter, db)
     return atms
+
+@app.post('/api/offices')
+def get_filter_offices(office_filter: OfficeFilter, db: Session = Depends(get_db)) -> list[OfficeResponse]:
+    offices = filter_office(office_filter, db)
+    return offices
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=7000)
