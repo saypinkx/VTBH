@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, Tab, Tabs} from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { filterAtm } from '@src/api';
 import { YMap } from '@yandex/ymaps3-types';
 import './interactive.less';
@@ -72,6 +72,9 @@ export const Interactive = (): React.ReactElement => {
                 </Tabs>
               </Box>
               <Box component="div" sx={{ display: activeTab === 0 ? 'block' : 'none', marginLeft: 1 }}>
+                <Typography component="h6" variant="h6">
+                  Выберите опции, которые Вам требуются
+                </Typography>
                 <FormGroup>
                   <FormControlLabel
                     control={<Checkbox checked={isAllDay} onChange={e => setIsAllDay(e.target.checked)} />}
@@ -110,12 +113,14 @@ export const Interactive = (): React.ReactElement => {
                     label="RUB"
                   />
                 </FormGroup>
-                <Button variant="contained" sx={{ marginTop: 1, textAlign: 'center' }} onClick={() => getAtms()}>
+                <Button fullWidth variant="contained" sx={{ marginTop: 1, textAlign: 'center' }} onClick={() => getAtms()}>
                   Применить фильтры
                 </Button>
               </Box>
-              <Box component="div" sx={{ display: activeTab === 1 ? 'block' : 'none' }}>
-                Офисы
+              <Box component="div" sx={{ display: activeTab === 1 ? 'block' : 'none', marginLeft: 1 }}>
+                <Typography component="h6" variant="h6">
+                  Выберите опции, которые Вам требуются
+                </Typography>
               </Box>
             </>
           }

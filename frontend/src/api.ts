@@ -58,7 +58,7 @@ export async function logout(): Promise<{ ok: boolean }> {
 
 export async function filterAtm(body: AtmFilter): Promise<Atm> {
   try {
-    const { data } = await api.post<Atm>('/filter_atm', body);
+    const { data } = await api.post<Atm>('/atms', body);
     return data;
   } catch (e) {
     throw new Error((e as AxiosError<ApiError>)?.response?.data?.message);
